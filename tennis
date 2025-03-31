@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tennis for Two</title>
+    <style>
+        body { text-align: center; background: black; color: white; }
+        canvas { background: green; display: block; margin: auto; }
+    </style>
+</head>
+<body>
+    <h1>Tennis for Two</h1>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        let ball = { x: 400, y: 200, radius: 5, dx: 3, dy: -3 };
+        let paddle1 = { x: 20, y: 180, width: 10, height: 60, dy: 0 };
+        let paddle2 = { x: 770, y: 180, width: 10, height: 60, dy: 0 };
+        const paddleSpeed = 4;
+
+        function drawRect(x, y, w, h, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, w, h);
+        }
+
+        function drawBall() {
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function movePaddles() {
+            paddle1.y += paddle1.dy;
+            paddle2.y += paddle2.dy;
+            
+            if (paddle1.y < 0) paddle1.y = 0;
+            if (paddle1.y + paddle1.height > canvas.height) paddle1.y = canvas.height - paddle1.height;
+            if (paddle2.y < 0) paddle2.y = 0;
+            if (paddle2.y + paddle2.height > canvas.height) paddle2.y = canvas.height - paddle2.height;
+        }
+
+        function moveBall() {
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            if (ball.y < ball.radius || ball.y > canvas.height - ball.radius) ball.dy *= -1;
+
+            if (
+                (ball.x - ball.radius <= paddle1.x + paddle1.width && ball.y > paddle1.y && ball.y < paddle1.y + paddle1.height) ||
+                (ball.x + ball.radius >= paddle2.x && ball.y > paddle2.y && ball.y < paddle2.y + paddle2.height)
+            ) {
+                ball.dx *= -1;
+            }
+        }
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawRect(0, 0, canvas.width, canvas.height, "green");
+            drawBall();
+            drawRect(paddle1.x, paddle1.y, paddle1.width, paddle1.height, "white");
+            drawRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height, "white");
+            moveBall();
+            movePaddles();
+            requestAnimationFrame(gameLoop);
+        }
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "w") paddle1.dy = -paddleSpeed;
+            if (e.key === "s") paddle1.dy = paddleSpeed;
+            if (e.key === "o") paddle2.dy = -paddleSpeed;
+            if (e.key === "l") paddle2.dy = paddleSpeed;
+        });
+
+        document.addEventListener("keyup", (e) => {
+            if (e.key === "w" || e.key === "s") paddle1.dy = 0;
+            if (e.key === "o" || e.key === "l") paddle2.dy = 0;
+        });
+
+        gameLoop();
+    </script>
+</body>
+</html>
