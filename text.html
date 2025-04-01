@@ -14,7 +14,7 @@
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(12, 30px);
+            grid-template-columns: repeat(16, 30px);
             gap: 5px;
             justify-content: center;
             margin: 20px;
@@ -63,13 +63,11 @@
     <p id="colorCode">#FFFFFF</p><script>
     function generateColors() {
         let colors = [];
-        let steps = [0, 51, 102, 153, 204, 255];
-        for (let r of steps) {
-            for (let g of steps) {
-                for (let b of steps) {
-                    colors.push(`#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`.toUpperCase());
-                }
-            }
+        for (let i = 0; i < 256; i++) {
+            let r = (i & 0xE0);
+            let g = (i & 0x1C) << 3;
+            let b = (i & 0x03) << 6;
+            colors.push(`#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`.toUpperCase());
         }
         return colors;
     }
