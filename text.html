@@ -1,95 +1,52 @@
-<!DOCTYPE html><html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Grid Picker</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-            background-color: #121212;
-            color: #ffffff;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(16, 30px);
-            gap: 5px;
-            justify-content: center;
-            margin: 20px;
-        }
-        .color-box {
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            border: 1px solid #ffffff;
-            transition: transform 0.2s;
-        }
-        .color-box:hover {
-            transform: scale(1.2);
-        }
-        #colorCode {
-            font-size: 18px;
-            margin-top: 10px;
-        }
-        .switch {
-            margin: 20px;
-            padding: 10px 15px;
-            font-size: 16px;
-            border: none;
-            background-color: #555;
-            color: white;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .switch:hover {
-            background-color: #777;
-        }
-        .light-mode {
-            background-color: #ffffff;
-            color: #000000;
-        }
-        .light-mode .color-box {
-            border: 1px solid #000000;
-        }
-    </style>
-</head>
-<body>
-    <button class="switch" onclick="toggleMode()">Toggle Dark/Light Mode</button>
-    <h2>Pick a Color</h2>
-    <div class="grid" id="colorGrid"></div>
-    <p id="colorCode">#FFFFFF</p><script>
-    function generateColors() {
-        let colors = [];
-        for (let i = 0; i < 256; i++) {
-            let r = (i & 0xE0);
-            let g = (i & 0x1C) << 3;
-            let b = (i & 0x03) << 6;
-            colors.push(`#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`.toUpperCase());
-        }
-        return colors;
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 50px;
+        background-color: #121212;
+        color: #ffffff;
+        transition: background-color 0.3s, color 0.3s;
     }
-
-    const colors = generateColors();
-    const colorGrid = document.getElementById("colorGrid");
-    const colorCode = document.getElementById("colorCode");
-
-    colors.forEach(color => {
-        let div = document.createElement("div");
-        div.classList.add("color-box");
-        div.style.backgroundColor = color;
-        div.onclick = function() {
-            colorCode.textContent = color;
-        };
-        colorGrid.appendChild(div);
-    });
-
-    function toggleMode() {
-        document.body.classList.toggle("light-mode");
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(16, 30px);
+        gap: 0; /* Set gap to 0 to remove space between color boxes */
+        justify-content: center;
+        margin: 20px;
     }
-</script>
-
-</body>
-</html>
+    .color-box {
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        border: 1px solid #ffffff;
+        transition: transform 0.2s;
+    }
+    .color-box:hover {
+        transform: scale(1.2);
+    }
+    #colorCode {
+        font-size: 18px;
+        margin-top: 10px;
+    }
+    .switch {
+        margin: 20px;
+        padding: 10px 15px;
+        font-size: 16px;
+        border: none;
+        background-color: #555;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+    .switch:hover {
+        background-color: #777;
+    }
+    .light-mode {
+        background-color: #ffffff;
+        color: #000000;
+    }
+    .light-mode .color-box {
+        border: 1px solid #000000;
+    }
+</style>
