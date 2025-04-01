@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Picker</title>
+    <title>Color Grid Picker</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,26 +11,22 @@
             background-color: #121212;
             color: #ffffff;
         }
-        #colorBox {
-            width: 200px;
-            height: 200px;
-            margin: 20px auto;
-            border: 2px solid #ffffff;
-            display: flex;
-            align-items: center;
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 30px);
+            gap: 5px;
             justify-content: center;
-            font-weight: bold;
-            background-color: #333;
-            transition: background-color 0.5s ease-in-out;
-            box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
+            margin: 20px;
         }
-        input[type="color"] {
-            width: 100px;
-            height: 50px;
-            border: none;
+        .color-box {
+            width: 30px;
+            height: 30px;
             cursor: pointer;
-            background: none;
+            border: 1px solid #ffffff;
+            transition: transform 0.2s;
+        }
+        .color-box:hover {
+            transform: scale(1.2);
         }
         #colorCode {
             font-size: 18px;
@@ -40,16 +36,34 @@
 </head>
 <body>
     <h2>Pick a Color</h2>
-    <input type="color" id="colorPicker" onchange="updateColor()">
-    <div id="colorBox">Color</div>
+    <div class="grid" id="colorGrid"></div>
     <p id="colorCode">#FFFFFF</p><script>
-    function updateColor() {
-        let color = document.getElementById('colorPicker').value;
-        let colorBox = document.getElementById('colorBox');
-        let colorCode = document.getElementById('colorCode');
-        colorBox.style.backgroundColor = color;
-        colorCode.textContent = color.toUpperCase();
+    function generateColors() {
+        let colors = [];
+        let steps = [0, 51, 102, 153, 204, 255];
+        for (let r of steps) {
+            for (let g of steps) {
+                for (let b of steps) {
+                    colors.push(`#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`.toUpperCase());
+                }
+            }
+        }
+        return colors;
     }
+
+    const colors = generateColors();
+    const colorGrid = document.getElementById("colorGrid");
+    const colorCode = document.getElementById("colorCode");
+
+    colors.forEach(color => {
+        let div = document.createElement("div");
+        div.classList.add("color-box");
+        div.style.backgroundColor = color;
+        div.onclick = function() {
+            colorCode.textContent = color;
+        };
+        colorGrid.appendChild(div);
+    });
 </script>
 
 </body>
