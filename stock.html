@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stock Market Simulator</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    button { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Stock Market Simulator</h1>
+  <p><strong>Balance:</strong> $<span id="balance">0</span></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Stock</th>
+        <th>Price</th>
+        <th>Owned</th>
+        <th>Buy</th>
+        <th>Sell</th>
+      </tr>
+    </thead>
+    <tbody id="stockTable"></tbody>
+  </table>
+
+  <button onclick="nextRound()">Next Round</button>
+  <button onclick="saveGame()">Save</button>
+  <button onclick="loadGame()">Load</button>
+  <button onclick="resetGame()">Reset</button>
+
+  <script>
+    let balance = 1000;
+    let stocks = {
+      "ABC": { price: 100, owned: 0 },
+      "XYZ": { price: 150, owned: 0 },
+      "LMN": { price: 75, owned: 0 }
+    };
+
+    function renderTable() {
+      document.getElementById("balance").innerText = balance.toFixed(2);
+      const table = document.getElementById("stockTable");
+      table.innerHTML = "";
+      for (let name in stocks) {
+        let s = stocks[name];
+        table.innerHTML += `
+          <tr>
+            <td>${name}</td>
+            <td>$${s.price.toFixed(2)}</td>
+            <td>${s.owned}</td>
+            <td><button onclick="buyStock('${name}')">Buy</button></td>
+            <td><button onclick="sellStock('${name}')">Sell</button></td>
+          </tr>
+        `;
+      }
+    }
+
+    function buyStock(name) {
+      let s = stocks[name];
+      if (balance >= s.price) {
+        s.owned++;
+        balance -= s.price;
+        renderTable();
+      } else {
+        alert("Not enough balance!");
+      }
+    }
+
+    function sellStock(name) {
+      let s = stocks[name];
+      if (s.owned > 0) {
+        s.owned--;
+        balance += s.price;
+        renderTable();
+      } else {
+        alert("You don’t own any shares!");
+      }
+    }
+
+    function nextRound() {
+      for (let name in stocks) {
+        let change = (Math.random() * 20 - 10).toFixed(2); // -10 to +10
+        stocks[name].price = Math.max(1, stocks[name].price + parseFloat(change));
+      }
+      renderTable();
+    }
+
+    function saveGame() {
+      const gameData = {
+        balance: balance,
+        stocks: stocks
+      };
+      localStorage.setItem("stockGameData", JSON.stringify(gameData));
+      alert("Game saved!");
+    }
+
+    function loadGame() {
+      const data = localStorage.getItem("stockGameData");
+      if (data) {
+        const parsed = JSON.parse(data);
+        balance = parsed.balance;
+        stocks = parsed.stocks;
+        renderTable();
+        alert("Game loaded!");
+      } else {
+        alert("No saved game found.");
+      }
+    }
+
+    function resetGame() {
+      if (confirm("Are you sure you want to reset your progress?")) {
+        balance = 1000;
+        stocks = {
+          "ABC": { price: 100, owned: 0 },
+          "XYZ": { price: 150, owned: 0 },
+          "LMN": { price: 75, owned: 0 }
+        };
+        renderTable();
+      }
+    }
+
+    // Initial render
+    renderTable();
+  </script>
+</body>
+</html>
