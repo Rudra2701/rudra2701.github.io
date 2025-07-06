@@ -1,0 +1,86 @@
+<script>
+  const tabs = [
+    { name: "HTML", type: "html", content: "" },
+    { name: "CSS", type: "css", content: "" },
+    { name: "JS", type: "js", content: "" }
+  ];
+
+  let currentTab = 0;
+
+  const tabContainer = document.getElementById("tabs");
+  const codeArea = document.getElementById("codeArea");
+  const preview = document.getElementById("preview");
+  const toggle = document.getElementById("modeToggle");
+
+  // Load saved code from localStorage
+  function loadCode() {
+    tabs.forEach(tab => {
+      const saved = localStorage.getItem("ide_code_" + tab.type);
+      if (saved) tab.content = saved;
+    });
+  }
+
+  // Save current tab content to localStorage
+  function saveCode() {
+    tabs.forEach(tab => {
+      localStorage.setItem("ide_code_" + tab.type, tab.content);
+    });
+  }
+
+  function renderTabs() {
+    tabContainer.innerHTML = "";
+    tabs.forEach((tab, index) => {
+      const el = document.createElement("div");
+      el.className = "tab" + (index === currentTab ? " active" : "");
+      el.innerText = tab.name;
+      el.onclick = () => switchTab(index);
+      tabContainer.appendChild(el);
+    });
+  }
+
+  function switchTab(index) {
+    tabs[currentTab].content = codeArea.value;
+    saveCode();
+    currentTab = index;
+    codeArea.value = tabs[index].content;
+    renderTabs();
+  }
+
+  function updatePreview() {
+    tabs[currentTab].content = codeArea.value;
+    saveCode();
+
+    const html = tabs.find(t => t.type === "html")?.content || "";
+    const css = tabs.find(t => t.type === "css")?.content || "";
+    const js = tabs.find(t => t.type === "js")?.content || "";
+
+    preview.srcdoc = `
+      <!DOCTYPE html>
+      <html>
+      <head><style>${css}</style></head>
+      <body>
+        ${html}
+        <script>${js}<\/script>
+      </body>
+      </html>`;
+  }
+
+  toggle.addEventListener("change", () => {
+    document.body.classList.toggle("dark", toggle.checked);
+    localStorage.setItem("ide_darkmode", toggle.checked);
+  });
+
+  codeArea.addEventListener("input", updatePreview);
+
+  // Load dark mode setting
+  if (localStorage.getItem("ide_darkmode") === "true") {
+    toggle.checked = true;
+    document.body.classList.add("dark");
+  }
+
+  // Init
+  loadCode();
+  renderTabs();
+  codeArea.value = tabs[currentTab].content;
+  updatePreview();
+</script>
