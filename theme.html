@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leafbase 72 Theme Preview</title>
+  <style>
+    body {
+      font-family: monospace;
+      margin: 0;
+      padding: 0;
+      background: #f0f0f0;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px;
+    }
+    .theme-box {
+      flex: 1 1 300px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .title {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .code {
+      padding: 10px;
+      border-radius: 6px;
+      font-family: Consolas, monospace;
+    }
+    .theme-box span.comment { font-style: italic; }
+  </style>
+</head>
+<body>
+  <div class="container" id="themeContainer"></div>
+  <script>
+    const themes = [];
+    for (let i = 1; i <= 72; i++) {
+      const name = `theme-${i}`;
+      const baseHue = (i * 30) % 360;
+      const bg = `hsl(${baseHue}, 30%, 12%)`;
+      const text = `hsl(${baseHue}, 20%, 85%)`;
+      const keyword = `hsl(${(baseHue + 30) % 360}, 70%, 65%)`;
+      const string = `hsl(${(baseHue + 60) % 360}, 80%, 70%)`;
+      const comment = `hsl(${(baseHue + 90) % 360}, 20%, 55%)`;
+      themes.push({
+        name,
+        title: `Theme ${i}`,
+        style: `
+          .${name} { background: ${bg}; color: ${text}; }
+          .${name} .keyword { color: ${keyword}; }
+          .${name} .string { color: ${string}; }
+          .${name} .comment { color: ${comment}; }
+        `
+      });
+    }const style = document.createElement('style');
+style.textContent = themes.map(t => t.style).join('\n');
+document.head.appendChild(style);
+
+const container = document.getElementById('themeContainer');
+themes.forEach(({ name, title }) => {
+  const box = document.createElement('div');
+  box.className = `theme-box ${name}`;
+  box.innerHTML = `
+    <div class="title">${title}</div>
+    <pre class="code">
+
+<span class="comment">// This is a comment</span> <span class="keyword">function</span> sayHello() { <span class="keyword">let</span> greeting = <span class="string">"Hello, Leafbase!"</span>; console.log(greeting); }</pre>`; container.appendChild(box); }); </script>
+
+</body>
+</html>
