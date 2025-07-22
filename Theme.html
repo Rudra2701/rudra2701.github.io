@@ -30,87 +30,107 @@
       padding: 10px;
       border-radius: 6px;
       font-family: Consolas, monospace;
-    }/* Leaf Dark */
-.leaf-dark {
-  background-color: #1e1e1e;
-  color: #d4d4d4;
-}
-.leaf-dark .keyword { color: #569cd6; }
-.leaf-dark .string { color: #d69d85; }
-.leaf-dark .comment { color: #6a9955; }
+    }.theme-box span.comment { font-style: italic; }
 
-/* Solar Leaf */
-.solar-leaf {
-  background-color: #fdf6e3;
-  color: #657b83;
-}
-.solar-leaf .keyword { color: #268bd2; }
-.solar-leaf .string { color: #2aa198; }
-.solar-leaf .comment { color: #93a1a1; }
+.leaf-dark { background: #1e1e1e; color: #d4d4d4; }
+.leaf-dark .keyword { color: #569cd6; } .leaf-dark .string { color: #d69d85; } .leaf-dark .comment { color: #6a9955; }
 
-/* Midnight Forest */
-.midnight-forest {
-  background-color: #0b0f1a;
-  color: #c3d1e1;
-}
-.midnight-forest .keyword { color: #4db8ff; }
-.midnight-forest .string { color: #a3e635; }
-.midnight-forest .comment { color: #556677; }
+.solar-leaf { background: #fdf6e3; color: #657b83; }
+.solar-leaf .keyword { color: #268bd2; } .solar-leaf .string { color: #2aa198; } .solar-leaf .comment { color: #93a1a1; }
 
-/* Mint Mode */
-.mint-mode {
-  background-color: #e9f5ec;
-  color: #2d3e3f;
-}
-.mint-mode .keyword { color: #279977; }
-.mint-mode .string { color: #51837b; }
-.mint-mode .comment { color: #7e9c9a; }
+.midnight-forest { background: #0b0f1a; color: #c3d1e1; }
+.midnight-forest .keyword { color: #4db8ff; } .midnight-forest .string { color: #a3e635; } .midnight-forest .comment { color: #556677; }
 
-/* Cyberleaf */
-.cyberleaf {
-  background-color: #1a1c28;
-  color: #f5f5f5;
-}
-.cyberleaf .keyword { color: #00ffe7; }
-.cyberleaf .string { color: #ff8ccf; }
-.cyberleaf .comment { color: #888fa1; }
+.mint-mode { background: #e9f5ec; color: #2d3e3f; }
+.mint-mode .keyword { color: #279977; } .mint-mode .string { color: #51837b; } .mint-mode .comment { color: #7e9c9a; }
+
+.cyberleaf { background: #1a1c28; color: #f5f5f5; }
+.cyberleaf .keyword { color: #00ffe7; } .cyberleaf .string { color: #ff8ccf; } .cyberleaf .comment { color: #888fa1; }
+
+.blossom { background: #fff0f5; color: #4b2c3f; }
+.blossom .keyword { color: #ff69b4; } .blossom .string { color: #ff1493; } .blossom .comment { color: #d87093; }
+
+.sunset { background: #3b0a28; color: #ffd6e0; }
+.sunset .keyword { color: #ff6f61; } .sunset .string { color: #ffb347; } .sunset .comment { color: #ffa07a; }
+
+.dune { background: #faf3e0; color: #5e503f; }
+.dune .keyword { color: #8c6d31; } .dune .string { color: #d9bf77; } .dune .comment { color: #a58d5f; }
+
+.aqua-marine { background: #002b36; color: #93a1a1; }
+.aqua-marine .keyword { color: #2aa198; } .aqua-marine .string { color: #b58900; } .aqua-marine .comment { color: #586e75; }
+
+.lava-glow { background: #2f0a0a; color: #ffdfdf; }
+.lava-glow .keyword { color: #ff4500; } .lava-glow .string { color: #ffa07a; } .lava-glow .comment { color: #cd5c5c; }
+
+.iceberg { background: #e0f7fa; color: #006064; }
+.iceberg .keyword { color: #00acc1; } .iceberg .string { color: #4dd0e1; } .iceberg .comment { color: #80deea; }
+
+.galaxy-night { background: #0f0e17; color: #a7a9be; }
+.galaxy-night .keyword { color: #d9534f; } .galaxy-night .string { color: #5bc0de; } .galaxy-night .comment { color: #9999aa; }
+
+.matrix-green { background: #000; color: #00ff00; }
+.matrix-green .keyword { color: #00cc00; } .matrix-green .string { color: #66ff66; } .matrix-green .comment { color: #339933; }
+
+.lavender-fog { background: #e6e6fa; color: #4b0082; }
+.lavender-fog .keyword { color: #9370db; } .lavender-fog .string { color: #ba55d3; } .lavender-fog .comment { color: #dda0dd; }
+
+.desert-night { background: #2b1d0e; color: #fef4e8; }
+.desert-night .keyword { color: #c19a6b; } .desert-night .string { color: #deb887; } .desert-night .comment { color: #b8860b; }
+
+.grape-vine { background: #2d133b; color: #d1bce3; }
+.grape-vine .keyword { color: #a86cd1; } .grape-vine .string { color: #c38ec7; } .grape-vine .comment { color: #ae7aa0; }
+
+.neon-blue { background: #010130; color: #e0e0ff; }
+.neon-blue .keyword { color: #00bfff; } .neon-blue .string { color: #87cefa; } .neon-blue .comment { color: #4682b4; }
+
+.pumpkin-spice { background: #3d1e0f; color: #fbd1a2; }
+.pumpkin-spice .keyword { color: #ff7f50; } .pumpkin-spice .string { color: #ffa07a; } .pumpkin-spice .comment { color: #d2691e; }
+
+.frosted-glass { background: #f0f8ff; color: #2f4f4f; }
+.frosted-glass .keyword { color: #4682b4; } .frosted-glass .string { color: #5f9ea0; } .frosted-glass .comment { color: #708090; }
 
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="theme-box leaf-dark">
-      <div class="title">Leaf Dark 🌿</div>
+    <script>
+      const themes = [
+        "leaf-dark", "solar-leaf", "midnight-forest", "mint-mode", "cyberleaf",
+        "blossom", "sunset", "dune", "aqua-marine", "lava-glow",
+        "iceberg", "galaxy-night", "matrix-green", "lavender-fog", "desert-night",
+        "grape-vine", "neon-blue", "pumpkin-spice", "frosted-glass"
+      ];const themeTitles = {
+    "leaf-dark": "Leaf Dark 🌿",
+    "solar-leaf": "Solar Leaf ☀️",
+    "midnight-forest": "Midnight Forest 🌌",
+    "mint-mode": "Mint Mode 🌱",
+    "cyberleaf": "Cyberleaf 💻",
+    "blossom": "Blossom 🌸",
+    "sunset": "Sunset 🌇",
+    "dune": "Dune 🏜️",
+    "aqua-marine": "Aqua Marine 🌊",
+    "lava-glow": "Lava Glow 🌋",
+    "iceberg": "Iceberg 🧊",
+    "galaxy-night": "Galaxy Night 🌌",
+    "matrix-green": "Matrix Green 🧪",
+    "lavender-fog": "Lavender Fog 🌫️",
+    "desert-night": "Desert Night 🌙",
+    "grape-vine": "Grape Vine 🍇",
+    "neon-blue": "Neon Blue 💡",
+    "pumpkin-spice": "Pumpkin Spice 🎃",
+    "frosted-glass": "Frosted Glass ❄️"
+  };
+
+  const container = document.querySelector(".container");
+  themes.forEach(theme => {
+    const box = document.createElement("div");
+    box.className = `theme-box ${theme}`;
+    box.innerHTML = `
+      <div class="title">${themeTitles[theme]}</div>
       <pre class="code">
-<span class="comment">// This is a comment</span>
-<span class="keyword">function</span> sayHello() {
-  <span class="keyword">let</span> greeting = <span class="string">"Hello, Leafbase!"</span>;
-  console.log(greeting);
-}</pre>
-    </div><div class="theme-box solar-leaf">
-  <div class="title">Solar Leaf ☀️</div>
-  <pre class="code">
 
-<span class="comment">// This is a comment</span> <span class="keyword">function</span> sayHello() { <span class="keyword">let</span> greeting = <span class="string">"Hello, Leafbase!"</span>; console.log(greeting); }</pre> </div>
-
-<div class="theme-box midnight-forest">
-  <div class="title">Midnight Forest 🌌</div>
-  <pre class="code">
-
-<span class="comment">// This is a comment</span> <span class="keyword">function</span> sayHello() { <span class="keyword">let</span> greeting = <span class="string">"Hello, Leafbase!"</span>; console.log(greeting); }</pre> </div>
-
-<div class="theme-box mint-mode">
-  <div class="title">Mint Mode 🌱</div>
-  <pre class="code">
-
-<span class="comment">// This is a comment</span> <span class="keyword">function</span> sayHello() { <span class="keyword">let</span> greeting = <span class="string">"Hello, Leafbase!"</span>; console.log(greeting); }</pre> </div>
-
-<div class="theme-box cyberleaf">
-  <div class="title">Cyberleaf 💻</div>
-  <pre class="code">
-
-<span class="comment">// This is a comment</span> <span class="keyword">function</span> sayHello() { <span class="keyword">let</span> greeting = <span class="string">"Hello, Leafbase!"</span>; console.log(greeting); }</pre> </div>
+<span class="comment">// This is a comment</span> <span class="keyword">function</span> sayHello() { <span class="keyword">let</span> greeting = <span class="string">"Hello, Leafbase!"</span>; console.log(greeting); }</pre>`; container.appendChild(box); }); </script>
 
   </div>
 </body>
-  </html>
+</html>
