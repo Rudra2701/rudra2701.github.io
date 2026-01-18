@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Model Portfolio Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .portfolio {
+      max-width: 800px;
+      margin: auto;
+      display: grid;
+      gap: 20px;
+    }
+    .card {
+      background: #020617;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    .card h2 {
+      margin-top: 0;
+      color: #38bdf8;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #1e293b;
+      text-align: left;
+    }
+    th {
+      color: #a5b4fc;
+    }
+    .disclaimer {
+      max-width: 800px;
+      margin: 0 auto 25px auto;
+      padding: 12px 16px;
+      background: #020617;
+      border-left: 4px solid #facc15;
+      border-radius: 8px;
+      color: #fde68a;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Explicit dark mode support */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: #020617;
+        color: #e5e7eb;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Model Portfolio</h1>
+  <p style="text-align:center; opacity:0.8; margin-top:-10px; margin-bottom:20px;">Created by <strong>Rudra Shivhare</strong></p>
+  <p class="disclaimer">
+    ⚠️ <strong>Disclaimer:</strong> This is a <em>model portfolio</em> presented for educational and informational purposes only. The <strong>stock names shown are real</strong>, and data may be based on real or simulated market information. This content does <strong>not constitute financial advice, investment advice, or a recommendation</strong> to buy or sell any securities. Markets are subject to risk, and past or model performance does not guarantee future results. Always consult a SEBI-registered financial advisor before making investment decisions.
+  </p>
+  <div id="portfolio" class="portfolio"></div>
+
+  <script>
+    // This data normally comes from protfoli.json
+    const portfolioData = [
+      {
+        name: "Finance",
+        stock: {
+          HDFC: 9,
+          BankABC: 10
+        }
+      },
+      {
+        name: "Oil",
+        stock: {
+          OilCom: 9,
+          ONGC: 10
+        }
+      }
+    ];
+
+    const container = document.getElementById('portfolio');
+
+    portfolioData.forEach(section => {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const title = document.createElement('h2');
+      title.textContent = section.name;
+      card.appendChild(title);
+
+      const table = document.createElement('table');
+      table.innerHTML = `
+        <tr>
+          <th>Stock</th>
+          <th>Quantity</th>
+        </tr>
+      `;
+
+      for (const stock in section.stock) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${stock}</td>
+          <td>${section.stock[stock]}</td>
+        `;
+        table.appendChild(row);
+      }
+
+      card.appendChild(table);
+      container.appendChild(card);
+    });
+
+    /*
+    If you want to load from an external file (protfoli.json):
+
+    fetch('protfoli.json')
+      .then(res => res.json())
+      .then(data => { console.log(data); });
+
+    Note: This requires a local server (not file://)
+    */
+  </script>
+</body>
+</html>
