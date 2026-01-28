@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Advanced SIP + Lumpsum Calculator</title>
+<title>Advanced Investment Calculator</title>
 
 <style>
 body {
+  margin: 0;
   background: #000;
   color: #e5e7eb;
   font-family: Arial, sans-serif;
@@ -17,8 +18,8 @@ body {
 
 .card {
   background: #020617;
-  padding: 24px;
-  width: 360px;
+  padding: 22px;
+  width: 400px;
   border-radius: 16px;
   box-shadow: 0 0 30px rgba(34,197,94,0.15);
 }
@@ -26,12 +27,13 @@ body {
 h2 {
   text-align: center;
   color: #22c55e;
+  margin-bottom: 10px;
 }
 
 input, select {
   width: 100%;
-  padding: 10px;
-  margin-top: 10px;
+  padding: 9px;
+  margin-top: 8px;
   background: #020617;
   color: #e5e7eb;
   border: 1px solid #020617;
@@ -41,7 +43,7 @@ input, select {
 button {
   width: 100%;
   padding: 12px;
-  margin-top: 15px;
+  margin-top: 12px;
   background: linear-gradient(135deg,#22c55e,#16a34a);
   border: none;
   border-radius: 10px;
@@ -50,8 +52,15 @@ button {
 }
 
 .result {
-  margin-top: 15px;
+  margin-top: 12px;
   line-height: 1.6;
+  font-size: 14px;
+}
+
+canvas {
+  margin-top: 12px;
+  background: #020617;
+  border-radius: 10px;
 }
 </style>
 </head>
@@ -60,7 +69,7 @@ button {
 <div class="card">
   <h2>Investment Calculator</h2>
 
-  <input id="lumpsum" type="number" placeholder="Lumpsum Amount (₹)">
+  <input id="lumpsum" type="number" placeholder="Lumpsum (₹)">
   <input id="sip" type="number" placeholder="SIP Amount (₹)">
 
   <select id="sipFreq">
@@ -70,10 +79,9 @@ button {
     <option value="1">Yearly SIP</option>
   </select>
 
-  <input id="rate" type="number" placeholder="Annual Return (%)">
+  <input id="rate" type="number" placeholder="Your Expected Return (%)">
 
-  <input id="time" type="number" placeholder="Investment Duration">
-
+  <input id="time" type="number" placeholder="Duration">
   <select id="timeUnit">
     <option value="365">Days</option>
     <option value="12" selected>Months</option>
@@ -83,47 +91,101 @@ button {
   <button onclick="calculate()">Calculate</button>
 
   <div class="result" id="output"></div>
+  <canvas id="chart" width="360" height="200"></canvas>
 </div>
 
 <script>
-function calculate() {
-  let lumpsum = Number(lumpsumInput.value);
-  let sip = Number(sipInput.value);
-  let rate = Number(rateInput.value) / 100;
+const inflationRate = 0.0654;
+const niftyRate = 0.12;
 
-  let sipFreq = Number(sipFreqSelect.value);
-  let time = Number(timeInput.value);
-  let timeUnit = Number(timeUnitSelect.value);
+function futureValue(lump, sip, rate, freq, years) {
+  let r = rate / freq;
+  let n = years * freq;
 
-  let years = time / timeUnit;
-  let periods = years * sipFreq;
-  let r = rate / sipFreq;
+  let fvLump = lump * Math.pow(1 + rate, years);
+  let fvSip = sip * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
 
-  // Lumpsum FV
-  let fvLumpsum = lumpsum * Math.pow(1 + rate, years);
-
-  // SIP FV
-  let fvSip = sip * ((Math.pow(1 + r, periods) - 1) / r) * (1 + r);
-
-  let invested = lumpsum + (sip * periods);
-  let totalValue = fvLumpsum + fvSip;
-
-  output.innerHTML = `
-    💰 Total Invested: ₹${Math.round(invested).toLocaleString()}<br>
-    📈 Final Value: ₹${Math.round(totalValue).toLocaleString()}<br>
-    🚀 Wealth Gained: ₹${Math.round(totalValue - invested).toLocaleString()}
-  `;
+  return fvLump + fvSip;
 }
 
-// element shortcuts
-const lumpsumInput = document.getElementById("lumpsum");
+function drawLine(ctx, data, color) {
+  ctx.beginPath();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+
+  data.forEach((v, i) => {
+    let x = 30 + i * 30;
+    let y = 170 - v;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+
+  ctx.stroke();
+}
+
+function drawGraph(user, infl, nifty) {
+  const canvas = document.getElementById("chart");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  ctx.strokeStyle = "#444";
+  ctx.beginPath();
+  ctx.moveTo(30,10);
+  ctx.lineTo(30,170);
+  ctx.lineTo(350,170);
+  ctx.stroke();
+
+  drawLine(ctx, user, "#22c55e");    // Your return
+  drawLine(ctx, infl, "#ef4444");    // Inflation
+  drawLine(ctx, nifty, "#3b82f6");   // Nifty 50
+}
+
+function calculate() {
+  let lump = +lumpsum.value;
+  let sip = +sipInput.value;
+  let userRate = +rate.value / 100;
+
+  let freq = +sipFreq.value;
+  let time = +timeInput.value;
+  let unit = +timeUnit.value;
+
+  let years = time / unit;
+  let periods = years * freq;
+
+  let invested = lump + sip * periods;
+
+  let userFV = futureValue(lump, sip, userRate, freq, years);
+  let inflFV = futureValue(lump, sip, inflationRate, freq, years);
+  let niftyFV = futureValue(lump, sip, niftyRate, freq, years);
+
+  let cagr = ((userFV / invested) ** (1 / years) - 1) * 100;
+
+  output.innerHTML = `
+    💰 Invested: ₹${Math.round(invested).toLocaleString()}<br>
+    📈 Your Value: ₹${Math.round(userFV).toLocaleString()}<br>
+    🔥 Inflation Value: ₹${Math.round(inflFV).toLocaleString()}<br>
+    🇮🇳 NIFTY 50 Value: ₹${Math.round(niftyFV).toLocaleString()}<br>
+    📊 CAGR: ${cagr.toFixed(2)}%
+  `;
+
+  let userLine=[], inflLine=[], niftyLine=[];
+  for(let y=1;y<=Math.floor(years);y++){
+    userLine.push(futureValue(lump,sip,userRate,freq,y)/10000);
+    inflLine.push(futureValue(lump,sip,inflationRate,freq,y)/10000);
+    niftyLine.push(futureValue(lump,sip,niftyRate,freq,y)/10000);
+  }
+
+  drawGraph(userLine, inflLine, niftyLine);
+}
+
+// shortcuts
+const lumpsum = document.getElementById("lumpsum");
 const sipInput = document.getElementById("sip");
-const rateInput = document.getElementById("rate");
-const sipFreqSelect = document.getElementById("sipFreq");
+const rate = document.getElementById("rate");
+const sipFreq = document.getElementById("sipFreq");
 const timeInput = document.getElementById("time");
-const timeUnitSelect = document.getElementById("timeUnit");
+const timeUnit = document.getElementById("timeUnit");
 const output = document.getElementById("output");
 </script>
-
 </body>
 </html>
