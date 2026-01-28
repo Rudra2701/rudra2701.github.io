@@ -1,90 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SIP Compound Interest Calculator</title>
-  <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: radial-gradient(circle at top, #020617, #000000);
-    color: #e5e7eb;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
+<meta charset="UTF-8">
+<title>Advanced SIP + Lumpsum Calculator</title>
 
-  .card {
-    background: #020617;
-    padding: 28px;
-    border-radius: 14px;
-    width: 330px;
-    box-shadow: 0 0 25px rgba(34,197,94,0.15);
-    border: 1px solid #020617;
-  }
+<style>
+body {
+  background: #000;
+  color: #e5e7eb;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #22c55e;
-    letter-spacing: 0.5px;
-  }
+.card {
+  background: #020617;
+  padding: 24px;
+  width: 360px;
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(34,197,94,0.15);
+}
 
-  input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 8px;
-    border: 1px solid #020617;
-    background: #020617;
-    color: #e5e7eb;
-    outline: none;
-  }
+h2 {
+  text-align: center;
+  color: #22c55e;
+}
 
-  input::placeholder {
-    color: #6b7280;
-  }
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid #020617;
+  border-radius: 8px;
+}
 
-  input:focus {
-    border-color: #22c55e;
-  }
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  background: linear-gradient(135deg,#22c55e,#16a34a);
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-  button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 14px;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    color: #022c22;
-  }
-
-  button:hover {
-    opacity: 0.9;
-  }
-
-  .result {
-    margin-top: 18px;
-    line-height: 1.7;
-    background: #020617;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #020617;
-  }
+.result {
+  margin-top: 15px;
+  line-height: 1.6;
+}
 </style>
-
 </head>
+
 <body>
-
 <div class="card">
-  <h2>SIP Calculator</h2>
+  <h2>Investment Calculator</h2>
 
-  <input id="sip" type="number" placeholder="Monthly SIP (₹)">
+  <input id="lumpsum" type="number" placeholder="Lumpsum Amount (₹)">
+  <input id="sip" type="number" placeholder="SIP Amount (₹)">
+
+  <select id="sipFreq">
+    <option value="365">Daily SIP</option>
+    <option value="52">Weekly SIP</option>
+    <option value="12" selected>Monthly SIP</option>
+    <option value="1">Yearly SIP</option>
+  </select>
+
   <input id="rate" type="number" placeholder="Annual Return (%)">
-  <input id="years" type="number" placeholder="Time (Years)">
+
+  <input id="time" type="number" placeholder="Investment Duration">
+
+  <select id="timeUnit">
+    <option value="365">Days</option>
+    <option value="12" selected>Months</option>
+    <option value="1">Years</option>
+  </select>
 
   <button onclick="calculate()">Calculate</button>
 
@@ -92,23 +86,43 @@
 </div>
 
 <script>
-  function calculate() {
-    let P = Number(document.getElementById("sip").value);
-    let annualRate = Number(document.getElementById("rate").value);
-    let years = Number(document.getElementById("years").value);
+function calculate() {
+  let lumpsum = Number(lumpsumInput.value);
+  let sip = Number(sipInput.value);
+  let rate = Number(rateInput.value) / 100;
 
-    let r = annualRate / 12 / 100;
-    let n = years * 12;
+  let sipFreq = Number(sipFreqSelect.value);
+  let time = Number(timeInput.value);
+  let timeUnit = Number(timeUnitSelect.value);
 
-    let futureValue = P * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
-    let invested = P * n;
+  let years = time / timeUnit;
+  let periods = years * sipFreq;
+  let r = rate / sipFreq;
 
-    document.getElementById("output").innerHTML = `
-      💰 Total Invested: ₹${invested.toLocaleString()}<br>
-      📈 Final Value: ₹${Math.round(futureValue).toLocaleString()}<br>
-      🚀 Wealth Gained: ₹${Math.round(futureValue - invested).toLocaleString()}
-    `;
-  }
+  // Lumpsum FV
+  let fvLumpsum = lumpsum * Math.pow(1 + rate, years);
+
+  // SIP FV
+  let fvSip = sip * ((Math.pow(1 + r, periods) - 1) / r) * (1 + r);
+
+  let invested = lumpsum + (sip * periods);
+  let totalValue = fvLumpsum + fvSip;
+
+  output.innerHTML = `
+    💰 Total Invested: ₹${Math.round(invested).toLocaleString()}<br>
+    📈 Final Value: ₹${Math.round(totalValue).toLocaleString()}<br>
+    🚀 Wealth Gained: ₹${Math.round(totalValue - invested).toLocaleString()}
+  `;
+}
+
+// element shortcuts
+const lumpsumInput = document.getElementById("lumpsum");
+const sipInput = document.getElementById("sip");
+const rateInput = document.getElementById("rate");
+const sipFreqSelect = document.getElementById("sipFreq");
+const timeInput = document.getElementById("time");
+const timeUnitSelect = document.getElementById("timeUnit");
+const output = document.getElementById("output");
 </script>
 
 </body>
