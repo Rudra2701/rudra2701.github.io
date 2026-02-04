@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Aoura Messagers</title>
+    <title>Persistent Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -10,15 +10,8 @@
             padding: 20px;
             display: none;
         }
-        input {
-            padding: 8px;
-            width: 65%;
-        }
-        button {
-            padding: 8px 12px;
-            margin-left: 5px;
-            cursor: pointer;
-        }
+        input { padding: 8px; width: 65%; }
+        button { padding: 8px 12px; margin-left: 5px; }
         .msg {
             background: white;
             padding: 10px;
@@ -36,7 +29,8 @@
 </head>
 <body>
 
-<h2>Aoura Messager</h2>
+<h2>🔒 Secure Message Board</h2>
+<button onclick="logout()">Logout</button>
 
 <form id="msgForm">
     <input type="text" id="msgInput" placeholder="Enter message..." required>
@@ -46,29 +40,41 @@
 <div id="messages"></div>
 
 <script>
-    // 🔐 STORED PASSWORD HASH (SHA-256)
-    const STORED_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
+    // ===== AUTH CONFIG =====
+    const STORED_HASH = "5bcec46bc0654a1334e194f2f3cb382fdfeefeb3d94aa79bc77c35002390f42a";
 
     async function sha256(text) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(text);
-        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-        return Array.from(new Uint8Array(hashBuffer))
+        const data = new TextEncoder().encode(text);
+        const hash = await crypto.subtle.digest("SHA-256", data);
+        return Array.from(new Uint8Array(hash))
             .map(b => b.toString(16).padStart(2, "0"))
             .join("");
     }
 
-    (async function authenticate() {
-        const password = prompt("Enter password:");
-        const hash = await sha256(password || "");
+    async function authenticate() {
+        if (localStorage.getItem("auth") === "true") {
+            document.body.style.display = "block";
+            return;
+        }
+
+        const pwd = prompt("Enter password:");
+        const hash = await sha256(pwd || "");
 
         if (hash !== STORED_HASH) {
             document.body.innerHTML = "<h2>❌ Access Denied</h2>";
             throw new Error("Unauthorized");
         }
 
+        localStorage.setItem("auth", "true");
         document.body.style.display = "block";
-    })();
+    }
+
+    function logout() {
+        localStorage.removeItem("auth");
+        location.reload();
+    }
+
+    authenticate();
 
     // ===== MESSAGE SYSTEM =====
     const form = document.getElementById("msgForm");
@@ -87,8 +93,8 @@
             const div = document.createElement("div");
             div.className = "msg";
 
-            const text = document.createElement("span");
-            text.textContent = msg;
+            const span = document.createElement("span");
+            span.textContent = msg;
 
             const del = document.createElement("button");
             del.textContent = "Delete";
@@ -99,7 +105,7 @@
                 renderMessages();
             };
 
-            div.appendChild(text);
+            div.appendChild(span);
             div.appendChild(del);
             messagesDiv.appendChild(div);
         });
