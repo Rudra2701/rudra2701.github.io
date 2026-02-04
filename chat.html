@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Permanent Messages</title>
+    <title>Aoura Messager</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,22 +14,32 @@
         }
         input {
             padding: 8px;
-            width: 70%;
+            width: 65%;
         }
         button {
             padding: 8px 12px;
+            margin-left: 5px;
+            cursor: pointer;
         }
         .msg {
             background: white;
             padding: 10px;
-            margin: 5px 0;
+            margin: 6px 0;
             border-left: 4px solid #4caf50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .delete {
+            background: #e53935;
+            color: white;
+            border: none;
         }
     </style>
 </head>
 <body>
 
-    <h2>Permanent Message Board</h2>
+    <h2>Aoura Messager</h2>
 
     <form id="msgForm">
         <input type="text" id="msgInput" placeholder="Enter message..." required>
@@ -43,15 +53,32 @@
         const input = document.getElementById("msgInput");
         const messagesDiv = document.getElementById("messages");
 
-        // Load saved messages
         let messages = JSON.parse(localStorage.getItem("messages")) || [];
+
+        function saveMessages() {
+            localStorage.setItem("messages", JSON.stringify(messages));
+        }
 
         function renderMessages() {
             messagesDiv.innerHTML = "";
-            messages.forEach(msg => {
+            messages.forEach((msg, index) => {
                 const div = document.createElement("div");
                 div.className = "msg";
-                div.textContent = msg;
+
+                const text = document.createElement("span");
+                text.textContent = msg;
+
+                const delBtn = document.createElement("button");
+                delBtn.textContent = "Delete";
+                delBtn.className = "delete";
+                delBtn.onclick = () => {
+                    messages.splice(index, 1);
+                    saveMessages();
+                    renderMessages();
+                };
+
+                div.appendChild(text);
+                div.appendChild(delBtn);
                 messagesDiv.appendChild(div);
             });
         }
@@ -59,7 +86,7 @@
         form.addEventListener("submit", function (e) {
             e.preventDefault();
             messages.push(input.value);
-            localStorage.setItem("messages", JSON.stringify(messages));
+            saveMessages();
             input.value = "";
             renderMessages();
         });
