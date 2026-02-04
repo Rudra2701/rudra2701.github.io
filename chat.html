@@ -2,15 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Aoura Messager</title>
+    <title>Aoura Messagers</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background: #f4f4f4;
             padding: 20px;
-        }
-        form {
-            margin-bottom: 20px;
+            display: none;
         }
         input {
             padding: 8px;
@@ -28,7 +26,6 @@
             border-left: 4px solid #4caf50;
             display: flex;
             justify-content: space-between;
-            align-items: center;
         }
         .delete {
             background: #e53935;
@@ -39,60 +36,85 @@
 </head>
 <body>
 
-    <h2>Aoura Messager</h2>
+<h2>Aoura Messager</h2>
 
-    <form id="msgForm">
-        <input type="text" id="msgInput" placeholder="Enter message..." required>
-        <button type="submit">Add</button>
-    </form>
+<form id="msgForm">
+    <input type="text" id="msgInput" placeholder="Enter message..." required>
+    <button type="submit">Add</button>
+</form>
 
-    <div id="messages"></div>
+<div id="messages"></div>
 
-    <script>
-        const form = document.getElementById("msgForm");
-        const input = document.getElementById("msgInput");
-        const messagesDiv = document.getElementById("messages");
+<script>
+    // 🔐 STORED PASSWORD HASH (SHA-256)
+    const STORED_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
 
-        let messages = JSON.parse(localStorage.getItem("messages")) || [];
+    async function sha256(text) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(text);
+        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+        return Array.from(new Uint8Array(hashBuffer))
+            .map(b => b.toString(16).padStart(2, "0"))
+            .join("");
+    }
 
-        function saveMessages() {
-            localStorage.setItem("messages", JSON.stringify(messages));
+    (async function authenticate() {
+        const password = prompt("Enter password:");
+        const hash = await sha256(password || "");
+
+        if (hash !== STORED_HASH) {
+            document.body.innerHTML = "<h2>❌ Access Denied</h2>";
+            throw new Error("Unauthorized");
         }
 
-        function renderMessages() {
-            messagesDiv.innerHTML = "";
-            messages.forEach((msg, index) => {
-                const div = document.createElement("div");
-                div.className = "msg";
+        document.body.style.display = "block";
+    })();
 
-                const text = document.createElement("span");
-                text.textContent = msg;
+    // ===== MESSAGE SYSTEM =====
+    const form = document.getElementById("msgForm");
+    const input = document.getElementById("msgInput");
+    const messagesDiv = document.getElementById("messages");
 
-                const delBtn = document.createElement("button");
-                delBtn.textContent = "Delete";
-                delBtn.className = "delete";
-                delBtn.onclick = () => {
-                    messages.splice(index, 1);
-                    saveMessages();
-                    renderMessages();
-                };
+    let messages = JSON.parse(localStorage.getItem("messages")) || [];
 
-                div.appendChild(text);
-                div.appendChild(delBtn);
-                messagesDiv.appendChild(div);
-            });
-        }
+    function saveMessages() {
+        localStorage.setItem("messages", JSON.stringify(messages));
+    }
 
-        form.addEventListener("submit", function (e) {
-            e.preventDefault();
-            messages.push(input.value);
-            saveMessages();
-            input.value = "";
-            renderMessages();
+    function renderMessages() {
+        messagesDiv.innerHTML = "";
+        messages.forEach((msg, index) => {
+            const div = document.createElement("div");
+            div.className = "msg";
+
+            const text = document.createElement("span");
+            text.textContent = msg;
+
+            const del = document.createElement("button");
+            del.textContent = "Delete";
+            del.className = "delete";
+            del.onclick = () => {
+                messages.splice(index, 1);
+                saveMessages();
+                renderMessages();
+            };
+
+            div.appendChild(text);
+            div.appendChild(del);
+            messagesDiv.appendChild(div);
         });
+    }
 
+    form.addEventListener("submit", e => {
+        e.preventDefault();
+        messages.push(input.value);
+        saveMessages();
+        input.value = "";
         renderMessages();
-    </script>
+    });
+
+    renderMessages();
+</script>
 
 </body>
 </html>
